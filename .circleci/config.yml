@@ -45,6 +45,18 @@ jobs:
           name: Run NodeJsScan
           command: |
             nodejsscan -d ./
+      - run:
+           name: Run NodeJsScan
+           command: |
+            nodejsscan -d ./ -o sast-output.json
+      - store artefacts:
+          path: sast-output.json
+      - run:
+          name: Parse sast report
+          command: |
+            # exit with a non-zero exit code if there are any security issues
+            exit $(cat sast-output.json) | jq .total_count.sec)
+
 
 workflows:
   build-and-packge:
